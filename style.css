@@ -1,59 +1,18 @@
-/* Reset & Base Setup */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-html, body {
+body {
   font-family: 'Open Sans', sans-serif;
   background-color: #f8f9fa;
   color: #333;
-  scroll-behavior: smooth;
 }
 
-/* Headings */
-h1, h2, h3, h5 {
-  font-weight: bold;
-  color: #212529;
-}
-h1 {
-  font-size: 2.75rem;
-}
-h2 {
-  font-size: 1.75rem;
-}
-h3 {
-  font-size: 1.4rem;
-  color: #2800FF;
-}
-h5 {
-  font-size: 1.1rem;
-}
-
-/* Layout Containers */
-.wrapper {
-  background-color: #fffaf3;
-  padding: 2rem 1rem;
-}
-.container.mg {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-}
-
-/* Webcam Area */
+/* Webcam styling */
 #webcam {
   height: 480px;
   background: #e0e0e0;
   border-radius: 12px;
-  box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
-  margin-bottom: 1rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Pose Display */
+/* Pose */
 #pose {
   font-size: 2.5rem;
   font-weight: 700;
@@ -61,39 +20,47 @@ h5 {
 }
 
 /* Emoji Box */
-#emoji {
-  background: #f1f3f5;
-  padding: 10px;
+.emoji-box {
+  background: #f8f9fa;
   border-radius: 10px;
+  padding: 10px;
   text-align: center;
   font-size: 2rem;
-  width: 60px;
+  min-width: 60px;
 }
 
-/* Confidence */
-#confidence {
-  font-weight: bold;
-  background: #ffb3c1;
+/* Accuracy Meter */
+.accuracy-meter {
+  width: 100%;
+  max-width: 180px;
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+#confidence-bar {
+  height: 100%;
+  background-color: #dc3545;
   color: white;
-  border-radius: 10px;
-  padding: 5px 12px;
+  font-weight: bold;
   text-align: center;
-  float: right;
-  font-size: 0.9rem;
+  line-height: 24px;
+  border-radius: 12px;
+  transition: width 0.5s ease, background-color 0.4s;
 }
 
-/* Cues / Tips */
-#cues {
+/* Cues */
+.tip-box {
   background-color: #fff3cd;
-  border-left: 5px solid #ffc107;
-  padding: 12px 16px;
+  border-left: 4px solid #ffc107;
+  padding: 10px 14px;
   border-radius: 10px;
-  margin-bottom: 1rem;
   font-weight: 600;
-  line-height: 1.5;
 }
 
-/* Benefits Section */
+/* Benefits */
 .benefit-card {
   display: flex;
   align-items: center;
@@ -103,113 +70,52 @@ h5 {
   font-size: 1.5rem;
   margin-right: 10px;
 }
-.benefit-card div {
-  font-size: 1rem;
-  font-weight: 600;
-}
 
-/* Instruction Panel */
-.static, .static1 {
-  background-color: #fff;
-  padding: 1rem;
+/* Status */
+.status-badge {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 5px 12px;
   border-radius: 10px;
-  margin-bottom: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-.static1 {
-  background-color: #ffe2e6;
-  color: #ae0c28;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
 /* Buttons */
-.btn.btn-primary {
-  font-size: 0.9rem;
-  padding: 8px 16px;
+.btn-primary {
   background-color: #5076FF;
   border: none;
-  border-radius: 6px;
 }
 .btn-outline-secondary {
-  border-radius: 6px;
+  border-color: #ccc;
 }
 
-/* Status Badges */
-.status_nn, .status_posenet {
-  background: #d4edda;
-  color: #155724;
-  font-size: 0.85rem;
-  padding: 5px 10px;
-  border-radius: 10px;
-  display: inline-block;
-  margin-right: 0.5rem;
-  font-family: 'Roboto', sans-serif;
+/* Ordered List */
+.ol_t {
+  counter-reset: item;
+  list-style: none;
+  padding-left: 0;
 }
-
-/* Responsive Styles */
-@media screen and (max-width: 768px) {
-  #pose {
-    font-size: 2rem;
-  }
-  #webcam {
-    height: 320px;
-  }
-  .container.mg {
-    padding: 1rem;
-  }
-}
-
-/* Custom Lists */
-ol.ol_t {
-  list-style-position: inside;
-  padding-left: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-ol.ol_t li::before {
-  content: counter(item) ". ";
+.ol_t li {
   counter-increment: item;
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 24px;
+}
+.ol_t li::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0;
   font-weight: bold;
   color: #5076FF;
 }
-ol.ol_t {
-  counter-reset: item;
-}
 
-/* Footer Buttons */
-.left1, .right1 {
-  display: inline-block;
-  vertical-align: top;
-}
-.left1 {
-  width: 65%;
-}
-.right1 {
-  width: 35%;
-  text-align: right;
-}
-
-/* Custom Fonts */
-@font-face {
-  font-family: HK Grotesk;
-  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Regular.otf?v=1603136326027") format("opentype");
-}
-@font-face {
-  font-family: HK Grotesk;
-  font-weight: bold;
-  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Bold.otf?v=1603136323437") format("opentype");
-}
-
-/* Remix Button */
-.btn--remix {
-  font-family: 'HK Grotesk';
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  background: white;
-  border: 1px solid #000;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.btn--remix:hover {
-  background-color: #d0fff1;
+/* Responsive */
+@media screen and (max-width: 768px) {
+  #webcam {
+    height: 320px;
+  }
+  #pose {
+    font-size: 2rem;
+  }
 }
