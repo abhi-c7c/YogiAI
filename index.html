@@ -1,280 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!--
-      This is the page head - it contains info the browser uses to display the page
-      You won't see what's in the head in the page
-      Scroll down to the body element for the page content
-    -->
-    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ML5 Pose Yoga</title>
-  
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- import the webpage's javascript file -->
-    <script src="/script.js" defer></script>
+    <title>Yoga Pose Classifier</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
-    
-    <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.js"></script>   -->
-    <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection/dist/pose-detection.js"></script>-->
-    
-    <!-- Require the peer dependencies of pose-detection. -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- TensorFlow and Pose Models -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>    
-
-    <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-    <!-- Alternatively you can use the WASM backend: <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
-
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <!-- P5.js for drawing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
 
-    <!-- Meta tags for SEO and social sharing -->
-    <link rel="canonical" href="https://glitch-hello-website.glitch.me/" />
-    <meta
-      name="description"
-      content="A simple website, built with Glitch. Remix it to get your own."
-    />
-    
-        <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-
-    <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
-
-    <!-- import gogole fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@200;300&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@200;300&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@200;300&family=Open+Sans:wght@300&family=Roboto:wght@100;300&display=swap" rel="stylesheet"/>
-
-
+    <!-- Your style and logic -->
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
   </head>
+
   <body>
-    <!-- The wrapper and content divs set margins and positioning -->
-    <div class="wrapper">   
-      <div class="mg_img1">
-        <div class="mg_img">
-          <div class="container mg">
-            <div style="border-radius: 10px; background-color: white">
-              
-              <div class="row">
-                	<div class="col-lg-7 col-md-7 position-relative">
-                  
-                  <div id="webcam"></div>
-                  
-                        <!-- IF YOU MAKE THESE THE SAME DIV CLASS OR UL ID, YOU CAN STYLE BOTH THE SAME WAY? -->
-                  <div class="status_nn">
-                    <ul id="snn">
-                      
-                        <!-- BEFORE: <li id="snn_li">Neural Network Loaded</li>  -->
-                        <!-- MUST BE: div id="status-nn"  -->
+    <div class="container py-5">
+      <div class="row g-4">
+        <!-- Webcam / Pose Detection -->
+        <div class="col-lg-7">
+          <div class="p-3 rounded shadow bg-white">
+            <div id="webcam" class="mb-3"></div>
 
-                      <div id="status-nn">Neural Network loading</div>
-                    </ul>
-                  </div>
-
-                  <div class="status_posenet">
-                    <ul id="snn">
-
-                      <div id="status-posenet">MoveNet loading</div>
-                    </ul>
-                  </div>
-
-                  <div id="confidence">0% certainty</div>
-                </div>
-              
-                    <div class="col-lg-5 col-md-5">
-                        <div class="look">
-                          
-                          <h2 class="pay">This looks like ..</h2>
-        
-                          <!-- BEFORE: <div class="pose"> <h1 class="fz">Vrkasanalalala</h1> </div>
-                                        there was also a double: <div class="pose1"> but we only need 1? -->
-                          <!-- MUST BE: <div id="pose">placeholder</div> -->
-                          
-                          <h1> <div id="pose">... classifier loading</div> </h1>
-        
-                      
-        
-                          <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 left pb-3">
-                              <div id="emoji">👋🏼</div>
-
-                              
-                            </div>
-                            
-                            <div class="col-lg-6 col-md-6 col-sm-6 left">
-                             <!-- BEFORE:<div class="emoji_is_static" id="follow-up">what is next?</div> -->
-                              
-                              <div class="icon">⏭</div>
-                              <div id="followUp">up next</div>
-                            </div>
-                            
-                            
-                          <div class="cues">
-                            <h2 class="pay">Pay attention to...</h2>
-        
-                           <!-- BEFORE:  <h5 class="cues">Tuck your chin</h5>
-                            <h5 class="cues">Turn your knee outward</h5>
-                            <h5 class="cues">Press your foot into the leg & leg into the foot</h5> -->
-                            <!-- MUST BE: <div id="pose">placeholder</div> -->
-                            <div id="cues">your breath for now</div>
-                        
-                          </div>
-        
-                          <div>
-                          <!-- this 'pay' can be a h2 so its same styling as other h2 ? -->
-        
-                            <h2 class="pay">Benefits include ..</h2>
-                              <div class="icon">
-                                🤸‍♀️🦶
-                            </div><div id="benefits-body">the body</div><div class="clr">
-                            
-                            </div>
-                              <div class="icon">
-                                🌸🧠
-                            </div><div id="benefits-mind">the mind</div><div class="clr">
-                            
-                            </div>
-                             <div class="icon">
-                               🫀🫁
-                            </div><div id="benefits-organs">the organs</div><div class="clr">
-                            
-                            </div>
-                            </div>
-        
-                              </div>
-                            </div>
-                          </div>
-
-                  
-                </div>
-              </div>
+            <div class="d-flex justify-content-between">
+              <div id="status-nn" class="status-badge">Neural Net: Loading</div>
+              <div id="status-posenet" class="status-badge">MoveNet: Loading</div>
+              <div id="confidence">0%</div>
             </div>
           </div>
-        <!--  container end -->
+        </div>
 
-        
+        <!-- Pose Info -->
+        <div class="col-lg-5">
+          <div class="p-4 rounded shadow bg-white">
+            <h5 class="text-muted mb-2">Current Pose:</h5>
+            <h1 id="pose">... loading</h1>
 
-            <div class="col-lg-3 mobile">
-              <p class="pay" style="margin-bottom: 5px">Instructions</p>
-              <div class="static">
-                <ol class="ol_t">
-                  <li>Allow the browser to access your webcam</li>
-                  <li>
-                    Stand back so your whole body - from top to toe - is visible
-                  </li>
-                  <li>
-                    Do a yoga pose (e.g. ‘tree’ pose) and see what happens!
-                  </li>
-                  <!-- <li>Customize your learning mode</li> -->
-                  <li>Happy learning!</li>
-                </ol>
-              </div>
-              <div class="static1">
-                <p class="static1">
-                  Use the app on desktop for the full experience with audio
-                  & customization
-                </p>
+            <div class="my-4 d-flex align-items-center">
+              <div class="emoji-box me-3" id="emoji">🧘</div>
+              <div>
+                <div class="fw-bold">Up Next</div>
+                <div id="followUp" class="text-muted">—</div>
               </div>
             </div>
 
-            <div class="col-lg-3 desktop">
-              
-              </div>
-              <div class="static1">
-                <p class="static1">
-                  Use the app on desktop for the full experience including audio
-                  & customization
-                </p>
-              </div>
+            <div class="mb-4">
+              <h5 class="text-muted">Tips</h5>
+              <div id="cues" class="tip-box">Focus on your breath</div>
             </div>
 
-            <div class="col-lg-2 mobile">
-              
-                
+            <div>
+              <h5 class="text-muted">Benefits</h5>
+              <div class="benefit-card">
+                <div class="icon">🤸‍♀️</div>
+                <div id="benefits-body">Flexibility</div>
               </div>
-            </div>
-
-            <div class="col-lg-4 dsply">
-              
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-5 col-md-5 col-sm-6">
-                    
-                      </div>
-                      <div class="form-check radio">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                           name="write-mode" value="write-sanskrit-pose" id="write-sanskrit-pose"
-                        />
-                       
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="benefit-card">
+                <div class="icon">🧠</div>
+                <div id="benefits-mind">Mental Clarity</div>
               </div>
-            
-
-            <div class="col-lg-2 desktop">
-              
-            
-              </div>
-            </div>
-
-            <div class="col-lg-3 mobile">
-              <h2 class="pay">Inner workings</h2>
-              <div class="static" style="float: left; line-height: 40px">
-                <p class="app">
-                  This app uses a custom-trained Neural Network classifier and
-                  the MoveNet model to identify keypoints of the body. It was
-                  made by Nadia Piet for her thesis exploring the potential for
-                  human pose estimation to support embodied learning systems in
-                  the context of yoga studies. Let me know what you think!
-                </p>
-
-                <div class="left1">
-                  <a href="#" class="btn btn-primary"
-                    >Read more about the project</a
-                  >
-                </div>
-                <div class="right1">
-                  <a href="#" class="btn btn-primary">Contact me</a>
-                </div>
+              <div class="benefit-card">
+                <div class="icon">🫁</div>
+                <div id="benefits-organs">Organ Health</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  
-      <script src="sketch.js"></script>
-      <iframe src="./ifr.html" onload="this.style.display='none'">
-        
-</iframe>
 
+      <!-- Instructions -->
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="p-4 bg-white rounded shadow">
+            <h5>Instructions</h5>
+            <ol>
+              <li>Allow webcam access.</li>
+              <li>Ensure full-body visibility.</li>
+              <li>Perform a yoga pose.</li>
+              <li>Enjoy real-time feedback.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-4 bg-white rounded shadow">
+            <h5>About This App</h5>
+            <p>This project uses TensorFlow's MoveNet model and a custom classifier to recognize yoga poses. Built by Nadia Piet to explore AI-powered embodied learning.</p>
+            <a href="#" class="btn btn-primary btn-sm">Learn More</a>
+            <a href="#" class="btn btn-outline-secondary btn-sm">Contact</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="sketch.js"></script>
+    <iframe src="./ifr.html" onload="this.style.display='none'"></iframe>
   </body>
 </html>
